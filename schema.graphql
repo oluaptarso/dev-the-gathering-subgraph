@@ -1,6 +1,20 @@
-type ExampleEntity @entity {
+enum CardRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+type Card @entity {
   id: ID!
-  count: BigInt!
-  id: BigInt! # uint256
-  externalId: BigInt! # uint256
+  externalId: BigInt!
+  owner: Bytes!
+  rarity: CardRarity!
+  foil: Boolean!
+  quantity: BigInt!
+  level: BigInt!
+  created: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt!
 }

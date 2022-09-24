@@ -1,4 +1,4 @@
-specVersion: 0.0.1
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
 dataSources:
@@ -10,12 +10,10 @@ dataSources:
       abi: DevTheGatheringV2
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - CardCreated
-        - CardUpdated
-        - OwnershipTransferred
+        - Card
       abis:
         - name: DevTheGatheringV2
           file: ./abis/DevTheGatheringV2.json
@@ -24,6 +22,4 @@ dataSources:
           handler: handleCardCreated
         - event: CardUpdated(uint256,uint256,address,uint8,bool,uint256,uint256,bool,uint256,uint256)
           handler: handleCardUpdated
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
       file: ./src/dev-the-gathering-v-2.ts

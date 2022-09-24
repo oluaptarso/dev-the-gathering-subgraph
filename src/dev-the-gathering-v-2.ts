@@ -5,31 +5,22 @@ import {
   CardUpdated,
   OwnershipTransferred
 } from "../generated/DevTheGatheringV2/DevTheGatheringV2"
-import { ExampleEntity } from "../generated/schema"
+import { Card } from "../generated/schema"
 
 export function handleCardCreated(event: CardCreated): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+  const entity = new Card(event.params.id.toString());
+  entity.externalId = event.params.externalId;
+  entity.owner = event.params.owner;
+  entity.rarity = event.params.rarity.toString();
+  entity.foil = event.params.foil;
+  entity.quantity = event.params.quantity;
+  entity.level = event.params.level;
+  entity.created = event.params.created;
+  entity.createdAt = event.params.createdAt;
+  entity.updatedAt = event.params.updatedAt;
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
-
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.id = event.params.id
-  entity.externalId = event.params.externalId
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
+  entity.save();
 
   // Note: If a handler doesn't require existing field values, it is faster
   // _not_ to load the entity from the store. Instead, create it fresh with
@@ -55,6 +46,14 @@ export function handleCardCreated(event: CardCreated): void {
   // - contract.updateBoosterPrice(...)
 }
 
-export function handleCardUpdated(event: CardUpdated): void {}
+export function handleCardUpdated(event: CardUpdated): void {
+  const entity = new Card(event.params.id.toString());
+  entity.foil = event.params.foil;
+  entity.quantity = event.params.quantity;
+  entity.level = event.params.level;
+  entity.updatedAt = event.params.updatedAt;
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+  entity.save();
+}
+
+export function handleOwnershipTransferred(event: OwnershipTransferred): void { }
