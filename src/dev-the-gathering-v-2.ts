@@ -1,18 +1,19 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   DevTheGatheringV2,
   CardCreated,
   CardUpdated,
-  OwnershipTransferred
-} from "../generated/DevTheGatheringV2/DevTheGatheringV2"
-import { Card } from "../generated/schema"
+  OwnershipTransferred,
+} from "../generated/DevTheGatheringV2/DevTheGatheringV2";
+import { Card } from "../generated/schema";
+
+const CardRarityEnum = ['COMMON','UNCOMMON','RARE','EPIC','LEGENDARY'];
 
 export function handleCardCreated(event: CardCreated): void {
-
   const entity = new Card(event.params.id.toString());
   entity.externalId = event.params.externalId;
   entity.owner = event.params.owner;
-  entity.rarity = event.params.rarity.toString();
+  entity.rarity = CardRarityEnum[event.params.rarity];
   entity.foil = event.params.foil;
   entity.quantity = event.params.quantity;
   entity.level = event.params.level;
@@ -47,13 +48,15 @@ export function handleCardCreated(event: CardCreated): void {
 }
 
 export function handleCardUpdated(event: CardUpdated): void {
-  const entity = new Card(event.params.id.toString());
-  entity.foil = event.params.foil;
-  entity.quantity = event.params.quantity;
-  entity.level = event.params.level;
-  entity.updatedAt = event.params.updatedAt;
+  const entity = Card.load(event.params.id.toString());
+  if (entity) {
+    entity.foil = event.params.foil;
+    entity.quantity = event.params.quantity;
+    entity.level = event.params.level;
+    entity.updatedAt = event.params.updatedAt;
 
-  entity.save();
+    entity.save();
+  }
 }
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void { }
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
